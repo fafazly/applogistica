@@ -1,3 +1,4 @@
+import 'package:shelf_cors_headers/shelf_cors_headers.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -14,11 +15,13 @@ void main() async {
   router.mount('/reciclometro/', reciclometroRouter());
   router.mount('/reports/', reportsRouter());
 
-  // Middleware de log
+  // Middleware de log e CORS
   var handler = const Pipeline()
       .addMiddleware(logRequests())
+      .addMiddleware(corsHeaders()) // <-- ADICIONE ESTA LINHA AQUI
       .addHandler(router);
+
   
-  var server = await io.serve(handler, 'localhost', 8080);
+  var server = await io.serve(handler, '0.0.0.0', 8080);
   print('Servidor rodando em http://${server.address.host}:${server.port}');
 }
